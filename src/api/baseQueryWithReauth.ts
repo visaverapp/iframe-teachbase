@@ -10,7 +10,7 @@ export const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers) => {
     // const token = localStorage.getItem(ACCESS_TOKEN);
     // if (token && !isExpired(token)) {
-      headers.set('Authorization', `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4NTY4NzQwLCJpYXQiOjE3MjU5NzY3NDAsImp0aSI6ImYxOTMyYzcwZmM3ZDQ5NzZhYTViMmZkNDgyMjdiY2NkIiwidXNlcl9pZCI6IjQ3ZTUxYWI0LTk0NzAtNDkwYS04MGMxLTlhOWM3Yzk1OTBjZCJ9.3DlLIeADw8m71XRKnp6_GyvnPw-k4AVER_vhZXWVh8o`);
+      headers.set('Authorization', `Bearer ${import.meta.env.VITE_TOKEN}`);
     // }
 
     return headers;

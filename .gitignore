@@ -6,12 +6,16 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.env
 
 node_modules
 dist
 idea/
 dist-ssr
 *.local
+build
+.vercel
+vercel.json
 
 # Editor directories and files
 .vscode/*

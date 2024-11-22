@@ -24,8 +24,8 @@ export const VideoPage = memo(({showBackButton}: VideoPage) => {
   const iframe = useRef<YouTube>(null);
   const iframeWrapper = useRef<HTMLDivElement>(null);
   const [params] = useSearchParams();
-  const playlistId = "59609dd8-7ef4-4080-9cb8-3c2cab266494"
-  const videoId = "5ec5bb33-9c1e-4295-8a82-ca36138da3cb"
+  const playlistId = `${import.meta.env.VITE_PLAYLIST_ID}`
+  const videoId = `${import.meta.env.VITE_VIDEO_ID}`
   const location = useLocation();
 
   useEffect(() => {
