@@ -125,3 +125,4 @@ db.sqlite
 .vercel
 node_modules
 build
+vercel.json
