@@ -15,7 +15,7 @@ jobs:
     - name: Build
       run: |
         npm install
-        npm run deploy
+        npm run-script build
       env:
         VITE_BASE_URL: ${{ secrets.BASE_URL }}
         VITE_MEDIA_URL: ${{ secrets.MEDIA_URL }}
