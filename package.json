@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "homepage": "https://visaverapp.github.io/iframe-teachbase/",
   "engines": {
     "node": "18.20.4"
   },
@@ -10,7 +11,8 @@
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "deploy": "vite build --base=/iframe-teachbase/ && git add build && git commit -m \"deploy to gh-pages\" && git subtree push --prefix build origin gh-pages"
   },
   "devDependencies": {
     "@types/react-dom": "^18.3.0",
