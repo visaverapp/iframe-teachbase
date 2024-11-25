@@ -17,18 +17,17 @@ jobs:
       run: |
         echo '${{ secrets.ENV_FILE }}' > .env
 
-    - name: Setup Node
-      uses: actions/setup-node@v3
-
-    - name: Build project
-      run: npm run build
+    - name: Install and Build 
+      run: |
+        npm ci
+        npm run build
 
     - name: Upload production-ready build files
       uses: actions/upload-artifact@v3
       with:
         name: production-files
         path: ./dist
-        
+
   deploy:
     name: Deploy
     needs: build
