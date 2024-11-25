@@ -11,7 +11,7 @@ export default defineConfig({
     viteTsconfigPaths(),
     svgrPlugin(),
   ],
-  base: "/iframe-teachbase",
+  // base: "/iframe-teachbase",
   build: {
     outDir: 'build',
     sourcemap: true,
