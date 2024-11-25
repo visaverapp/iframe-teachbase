@@ -19,11 +19,12 @@ jobs:
 
     - name: Build
       run: |
-        npm install
+        cat .env
+        npm ci
         npm run build
 
     - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@releases/4.1.1
+      uses: JamesIves/github-pages-deploy-action@4.1.1
       with:
-        BRANCH: main
-        FOLDER: build
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        folder: build
