@@ -17,32 +17,13 @@ jobs:
       run: |
         echo '${{ secrets.ENV_FILE }}' > .env
 
-    - name: Install and Build 
+    - name: Install and Build
       run: |
         npm ci
         npm run build
 
-    - name: Upload production-ready build files
-      uses: actions/upload-artifact@v3
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@v4
       with:
-        name: production-files
-        path: ./dist
-
-  deploy:
-    name: Deploy
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: production-files
-          path: ./dist
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+        folder: build
+        token: ${{ secrets.GITHUB_TOKEN }}
