@@ -10,26 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
 
-    - name: Build
+    - name: Create env file
+      working-directory: .
       run: |
-        npm install
-        npm run-script build
-      env:
-        VITE_BASE_URL: ${{ secrets.BASE_URL }}
-        VITE_MEDIA_URL: ${{ secrets.MEDIA_URL }}
-        VITE_IMAGE_URL: ${{ secrets.IMAGE_URL }}
-        VITE_BASE_URL_VERSION: ${{ secrets.BASE_URL_VERSION }}
-        VITE_GA: ${{ secrets.GA }}
-        VITE_GMT: ${{ secrets.GMT }}
-        VITE_TOKEN: ${{ secrets.TOKEN }}
-        VITE_VIDEO_ID: ${{ secrets.VIDEO_ID }}
-        VITE_PLAYLIST_ID: ${{ secrets.PLAYLIST_ID }}
+        echo '${{ secrets.ENV_FILE }}' > .env
 
-    - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@releases/v3
+    - name: Install and Build
+      run: |
+        npm ci
+        npm run build
+
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@v4
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: gh-pages
-        FOLDER: build
+        folder: build
+        token: ${{ secrets.GITHUB_TOKEN }}

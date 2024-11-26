@@ -1,9 +1,9 @@
 {
   "name": "iframe-teachbase",
-  "homepage": "https://visaverapp.github.io/iframe-teachbase",
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "homepage": "https://visaverapp.github.io/iframe-teachbase/",
   "engines": {
     "node": "18.20.4"
   },
@@ -12,8 +12,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prettier": "prettier --write .",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "vite build --base=/iframe-teachbase/ && git add build && git commit -m \"deploy to gh-pages\" && git subtree push --prefix build origin gh-pages"
   },
   "devDependencies": {
     "@types/react-dom": "^18.3.0",
@@ -47,7 +46,7 @@
     "react": "^18.2.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
-    "react-error-boundary": "^4.0.13",
+    "react-error-boundary": "^4.1.2",
     "react-ga": "^3.3.1",
     "react-ga4": "^2.1.0",
     "react-hook-form": "^7.53.0",
