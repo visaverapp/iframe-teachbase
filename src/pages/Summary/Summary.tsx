@@ -4,6 +4,7 @@ import {useGetDocsQuery, useLazyGetDocsQuery} from "@/api";
 import {Download} from "@/components/SVGIcons/Download";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
 import Markdown from "markdown-to-jsx";
+
 interface SummaryProps {
   videoId: string
 }
@@ -51,6 +52,8 @@ export const Summary = ({videoId}: SummaryProps) => {
   //   onChange(isCollapsed)
   // }
 
+ const cleanedMarkdown = data && data.markdown?.replace(/\n{2,}---\n{2,}/g, '\n\n');
+
   return (
       <div
           className={`${!isChangedHeight ? 'h-[96vh]' : 'h-[88vh]'} w-[650px] bg-white pt-[8px] pb-[16px] pl-[16px] pr-[8px] rounded-[12px] border border-white-active`}>
@@ -63,8 +66,10 @@ export const Summary = ({videoId}: SummaryProps) => {
             </button>
           </div>
           <div className='w-[590px]'>
-            {data && data.markdown && (
-                <Markdown>{data.markdown}</Markdown>
+            {cleanedMarkdown && (
+                <Markdown options={{
+                  forceBlock: true
+                }}>{cleanedMarkdown}</Markdown>
             )}
 
           </div>

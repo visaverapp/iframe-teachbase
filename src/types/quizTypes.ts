@@ -15,7 +15,7 @@ export interface QuizResultsSlice {
 export interface Chapter {
   title: string;
   text: string;
-  time: number | string;
+  start: number | string;
 }
 
 export interface Quiz {

@@ -58,7 +58,7 @@ export const quizSlice = createSlice({
           .map((item) =>
             item.quiz.map((q) => ({
               ...q,
-              start: item.chapter.time,
+              start: item.chapter.start,
               answers: [q.correctAnswer, ...q.wrongAnswers].sort(() => Math.random() - 0.5),
               answer: null,
             })),
