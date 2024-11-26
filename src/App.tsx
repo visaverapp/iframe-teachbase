@@ -8,10 +8,11 @@ const App = () => {
   return (
       <Routes>
         <Route path="/" element={<VideoLayout/>} />
-        <Route path="/full-search" element={<SearchStartPage/>}/>
-        <Route path="/search" element={<SearchLayout />}>
+        <Route path="full-search" element={<SearchStartPage/>}/>
+        <Route path="search" element={<SearchLayout />}>
           <Route index element={<SearchResultPage/>} />
         </Route>
+        <Route path=":videoId" element={<VideoLayout />} />
       </Routes>
   );
 };

@@ -21,8 +21,8 @@ export const SearchVideoCardWithScreenShot = ({ videoInfo }: SearchVideoCardProp
         <SearchVideoCardStyled>
           <Header>
             <HeaderContent>
-              <StyledLink to={`${videoInfo.originLink}`}>
-                <VideoCard video={videoInfo} iframeClassName='w-[320px] h-[208px] rounded-[12px]'/>
+              <StyledLink to={`/${videoInfo.publicId}?t=${videoInfo.startsFrom ?? 0}`} state={{fromSearch: true}}>
+                <VideoCard height={'208px'} url={videoInfo.originLink} video={videoInfo} iframeClassName='w-[320px] rounded-[12px]'/>
               </StyledLink>
             </HeaderContent>
           </Header>

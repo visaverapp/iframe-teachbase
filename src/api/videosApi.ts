@@ -1,77 +1,92 @@
 import {api} from './api';
 
-import {getSearchParamFromURL} from '@/utils/getSearchParamFromURL';
-
-import type {BaseParams, GetList, Video, VideoParams} from '@/types';
-import {SearchAIMovie} from "@/types/videosTypes";
+import type {GetList, QuizApiResponse} from '@/types';
+import {VideoWithFragments} from "@/types/playlistTypes";
+import {SummaryResponse, Timecode, TimecodesRequest, TimecodesResponse, Video} from "@/types/videosTypes";
+import {getSearchParamFromURL} from "@/utils/getSearchParamFromURL";
 
 const PATH = 'videos';
 
-const searchPATH = 'videos/search/';
-
 export const videosAPI = api.injectEndpoints({
   endpoints: (build) => ({
-    getVideos: build.query<Video[], { params?: VideoParams }>({
-      query: ({ params }) => ({
-        url: `${PATH}/`,
-        method: 'GET',
-        params,
-      }),
-      transformResponse: (data: GetList<Video>) => data.results,
-
-      providesTags: (result) =>
-        result
-          ? [...result.map(({ publicId: id }) => ({ type: 'videos' as const, id })), { type: 'videos', id: 'LIST' }]
-          : [{ type: 'videos', id: 'LIST' }],
-    }),
-
-    getMyVideos: build.query<Video[], { params?: BaseParams }>({
-      query: ({ params }) => ({
-        url: `${PATH}/my/`,
-        method: 'GET',
-        params,
-      }),
-      transformResponse: (data: GetList<Video>) => data.results,
-
-      providesTags: (result) =>
-        result
-          ? [...result.map(({ publicId: id }) => ({ type: 'videos' as const, id })), { type: 'videos', id: 'LIST' }]
-          : [{ type: 'videos', id: 'LIST' }],
-    }),
-
     getMovieById: build.query<Video, { id: string }>({
-      query: ({ id }) => ({
+      query: ({id}) => ({
         url: `${PATH}/${id}/`,
         method: 'GET',
       }),
-      providesTags: [{ type: 'videos', id: 'ONE' }],
+      providesTags: [{type: 'videos', id: 'ONE'}],
     }),
 
-    getSearchVideos: build.query<SearchAIMovie[], { search_str?: string | null; playlist_id?: string }>({
-      query: ({ search_str = '', playlist_id }) => ({
-        url: searchPATH,
+    //получение таймкодов к видео в библиотеке
+    getTimecodes: build.query<Timecode[], TimecodesRequest & { hash?: string }>({
+      query: ({ videoPublicId, hash }) => ({
+        url: `${PATH}/${videoPublicId}/timecodes/`,
         method: 'GET',
-        params: {
-          search_str,
-          playlist_id,
-        },
+        params: { linkHash: hash },
       }),
-      providesTags: (result) =>
-        result ? result.map(({ publicId: id }) => ({ type: 'searchInPlaylist' as const, id })) : ['searchInPlaylist'],
-      transformResponse: (data: SearchAIMovie[]) => {
-        return data.map((video) => ({
+      transformResponse: (response: TimecodesResponse) =>
+        (response.results?.[0]?.data?.timecodes ?? [])
+          .filter((obj, index) => {
+            return (
+              index ===
+              response.results?.[0]?.data?.timecodes.findIndex((t) => t.start === obj.start || t.text === obj.text)
+            );
+          })
+          .map((timecode) => ({ ...timecode, startOffsetMs: Math.round(Number(timecode.start)) }))
+          .sort((a, b) => a.startOffsetMs - b.startOffsetMs),
+    }),
+
+    //получение конспекта к видео в библиотеке
+    getDocs: build.query<{ pdfFile: string; markdown: string | null }, TimecodesRequest & { hash?: string }>({
+      query: ({ videoPublicId, hash }) => ({
+        url: `${PATH}/${videoPublicId}/summaries/`,
+        method: 'GET',
+        params: { linkHash: hash },
+      }),
+      transformResponse: (response: SummaryResponse) => {
+        const result = response.results[0];
+        return {
+          pdfFile: result.pdfFile,
+          markdown: result.markdown,
+        };
+      },
+    }),
+
+    //получение квизов к видео в библиотеке
+    getVideoAllQuizzes: build.query<QuizApiResponse, TimecodesRequest & { hash?: string }>({
+      query: ({ videoPublicId = '', hash }) => ({
+        url: `${PATH}/${videoPublicId}/quizzes/`,
+        method: 'GET',
+        params: { linkHash: hash },
+      }),
+      providesTags: (_, __, { videoPublicId }) => [{ type: 'quiz', id: videoPublicId }],
+      transformResponse: (response: GetList<QuizApiResponse>) => response.results[0],
+    }),
+
+    getFullSearchInVideo: build.query<VideoWithFragments[], Pick<Video, 'videoId'> & { query: string }>({
+      query: ({ videoId, query }) => ({
+        url: `${PATH}/${videoId}/full_search/`,
+        method: 'GET',
+        params: { query },
+      }),
+
+      transformResponse: (data: VideoWithFragments[]) => {
+        const dataWithCues = data.filter((video) => video.cues.length > 0);
+        return dataWithCues.map((video) => ({
           ...video,
-          timestamp_link: getSearchParamFromURL(video.timestamp_link, 't'),
+          cues: video.cues.map((cue) => ({ ...cue, timestampLink: getSearchParamFromURL(cue.timestampLink, 't') })),
         }));
       },
     }),
+
+
   }),
 });
 
 export const {
-  useGetVideosQuery,
-  useGetMyVideosQuery,
-  useGetSearchVideosQuery,
-  useLazyGetSearchVideosQuery,
   useGetMovieByIdQuery,
+  useLazyGetDocsQuery,
+  useGetDocsQuery,
+  useGetVideoAllQuizzesQuery,
+  useGetTimecodesQuery,
 } = videosAPI;

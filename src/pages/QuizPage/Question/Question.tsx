@@ -9,7 +9,7 @@ interface QuestionProps {
   answers: string[];
   correctAnswer: string;
   currentAnswer: string | null;
-  goToTime: (time: number | string) => void;
+  goToTime: (time: number) => void;
   start: number | string;
 }
 export const Question = ({ answers, correctAnswer, currentAnswer, question, goToTime, start }: QuestionProps) => {
@@ -58,7 +58,7 @@ export const Question = ({ answers, correctAnswer, currentAnswer, question, goTo
         <div className='flex pt-[16px] justify-between'>
           <div>
           {currentAnswer && correctAnswer !== currentAnswer && (
-              <button className='rounded-[10px] px-[18px] py-[6px] font-open-sans text-[14px] font-normal bg-dark-blue text-white-hover' onClick={() => goToTime(start)}>
+              <button className='rounded-[10px] px-[18px] py-[6px] font-open-sans text-[14px] font-normal bg-dark-blue text-white-hover' onClick={() => goToTime(start as number)}>
                 Смотреть фрагмент с ответом
               </button>
           )}

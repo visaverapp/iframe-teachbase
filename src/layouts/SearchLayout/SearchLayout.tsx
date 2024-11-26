@@ -24,7 +24,7 @@ export const SearchLayout = () => {
           </button>
           }
           <div className={`${!showButtonLastVideo && 'mx-auto'}`}>
-            <SearchInput/>
+            <SearchInput showButtonLastVideo={showButtonLastVideo}/>
           </div>
         </div>
         <div className='bg-white-hover'>

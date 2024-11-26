@@ -45,35 +45,11 @@ export interface Playlist {
 
 export type VideoInPlaylist = Pick<Video, 'publicId' | 'title' | 'thumbnailUrl'> & { startsFrom?: number };
 
-export type PersonalPlaylist = Playlist;
-
-export type UserPlaylist = Playlist;
-
-export interface CreatePlaylistType {
-  title: string;
-  category: string;
-  description: string;
-  privacyType: PrivacyType;
-}
-
-export interface CreatePlaylistForm extends Omit<CreatePlaylistType, 'category'> {
-  category: string;
-}
-
-export interface EditPlaylist {
-  id: number;
-  name: string;
-  description: string;
-  privacyType: PrivacyType;
-}
-
 export interface PlaylistMovie {
   playlist: PlaylistIdType;
   movies: number[];
   // videos: number[];
 }
-
-export type PartialUpdatePlaylist = Partial<CreatePlaylistType>;
 
 type Description = (string | [])[];
 
@@ -101,47 +77,3 @@ export interface Cue {
   durationS: number;
   content: string;
 }
-
-export interface TimecodesResponse {
-  count: number;
-  next: object;
-  previous: object;
-  results: Results[];
-}
-
-export type TransformedTimecodesResponse = {
-  timecodes: Timecode[];
-  publicId: string;
-};
-
-export type Results = {
-  data: ResultsData;
-  publicId: string;
-};
-
-type ResultsData = {
-  timecodes: Timecode[];
-};
-
-export interface Timecode {
-  start: number;
-  text: string;
-  title: string;
-}
-
-export type SummaryResponse = {
-  count: number;
-  next: string;
-  previous: string;
-  results: SummaryResponseResults[];
-};
-
-type SummaryResponseResults = {
-  pdfFile: string;
-  publicId: string;
-};
-
-export type TimecodesRequest = {
-  playlistId: string;
-  videoPublicId: string;
-};

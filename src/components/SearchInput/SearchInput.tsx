@@ -1,4 +1,4 @@
-import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import {useEffect,KeyboardEvent, useRef, useState} from "react";
 import SearchIcon from "@/components/SVGIcons/SearchIcon";
 import {useDebounce} from "@/hooks/useDebounce";
@@ -13,8 +13,10 @@ export type SearchInputPropsType = {
     suggetionsPosition: string
     navigatePath: string
   }
+  showButtonLastVideo?: boolean
+  showBackButton?: boolean
 }
-export const SearchInput = ({startSearchPageSettings}: SearchInputPropsType) => {
+export const SearchInput = ({startSearchPageSettings, showButtonLastVideo, showBackButton}: SearchInputPropsType) => {
 
   const [params, setParams] = useSearchParams();
   const [suggetions, setSuggetions] = useState<any[]>([])
@@ -25,9 +27,9 @@ export const SearchInput = ({startSearchPageSettings}: SearchInputPropsType) => 
   const navigate = useNavigate()
   const location = useLocation()
 
-  const playlistId = "59609dd8-7ef4-4080-9cb8-3c2cab266494"
+  const playlistId = `${import.meta.env.VITE_PLAYLIST_ID}`
 
-  const {data: video} = playlistsAPI.useGetFullSearchQuery({
+  const {data: video} = playlistsAPI.useGetFullSearchInPlaylistQuery({
     publicId: playlistId,
     query: search.current?.value || params.get("search") || ""
   });
@@ -37,7 +39,9 @@ export const SearchInput = ({startSearchPageSettings}: SearchInputPropsType) => 
       const suggetionsFragment = video.map(fragment => (
           {
             fragmentText: fragment.cues[0].content,
-            videoTitle: video.map(item => item.title)
+            videoTitle: video.map(item => item.title),
+            publicId: video.map(item => item.publicId),
+            timestampLink: fragment.cues[0].timestampLink
           }
       ))
       const suggetionsVideo = video.map(item => item.description)
@@ -67,13 +71,11 @@ export const SearchInput = ({startSearchPageSettings}: SearchInputPropsType) => 
   };
 
   const pickSuggestion = (content?: string) => {
-    if (startSearchPageSettings && !content) {
-      navigate(`${startSearchPageSettings.navigatePath}`);
-    } else if (content) {
-      navigate(`/search/?search=${content}`)
-    }
-    else {
-    navigate(`/`);
+    if (location.pathname.includes('full-search') && !content) {
+      navigate(`${startSearchPageSettings?.navigatePath}`);
+      // navigate(`/search/?search=${content}`)
+    } else if (!(location.pathname.includes('full-search')) && content) {
+      navigate(`/?search=${content}`)
     }
   };
 
@@ -122,10 +124,11 @@ export const SearchInput = ({startSearchPageSettings}: SearchInputPropsType) => 
               onKeyDown={onKeyDownHandler}
               defaultValue={params.get('search') ?? ''}
               placeholder='Что ищем в этом курсе?'
-              className={`${startSearchPageSettings?.inputWidth ? startSearchPageSettings.inputWidth : 'w-[945px]'} h-[40px] focus:outline-none focus:border-light-gray self-end pl-[16px] pr-[45px] pt-[7px] pb-[10px] border-[#8492A6] border-[1px] rounded-[9px] text-[16px] text-dark-blue `}
+              disabled={showBackButton || showButtonLastVideo}
+              className={`${startSearchPageSettings?.inputWidth ? startSearchPageSettings.inputWidth : 'w-[945px]'} ${(showBackButton || showButtonLastVideo) ? 'border-opacity-30 placeholder:opacity-35': ''} h-[40px] focus:outline-none focus:border-light-gray self-end pl-[16px] pr-[45px] pt-[7px] pb-[10px] border-[#8492A6] border-[1px] rounded-[9px] text-[16px] text-dark-blue `}
           />
           {!isActiveInput ?
-              <div className='absolute right-[2%] top-[25%]'>
+              <div className={`${(showBackButton || showButtonLastVideo) ? 'opacity-30': ''} absolute right-[2%] top-[25%]`}>
                 <SearchIcon/>
               </div>
               : <div onClick={clearInput} className='cursor-pointer absolute right-[3%] top-[35%]'>
@@ -134,7 +137,7 @@ export const SearchInput = ({startSearchPageSettings}: SearchInputPropsType) => 
           }
         </div>
 
-        {suggetions.length > 0 && open && params.get('search') && (
+        {location.pathname.includes('full-search') && suggetions.length > 0 && open && params.get('search') && (
             <div
                 className={`${startSearchPageSettings?.suggetionsPosition ? startSearchPageSettings.suggetionsPosition : 'top-[62px] w-[945px]'} absolute z-[10] max-h-[312px]  bg-white border border-[#8492A6] rounded-[10px] p-[2px]`}>
               <ul className='max-h-[290px] flex-col overflow-y-scroll scroll-bar'>
@@ -156,19 +159,21 @@ export const SearchInput = ({startSearchPageSettings}: SearchInputPropsType) => 
                   return (
                       <>
                         {fragment.fragmentText &&
-                            <li onClick={()=>pickSuggestion(fragment.fragmentText)}
-                                className='flex gap-1 px-[12px] py-[8px] cursor-pointer hover:bg-white-hover'>
-                                <FragmentPlayIconSuggetions/>
-                                <div className='w-fit'>
+                            <Link to={`/search/?search=${ fragment.fragmentText ?? search.current?.value}`} state={{fromSearch: true}}>
+                                <li
+                                    className='flex gap-1 px-[12px] py-[8px] cursor-pointer hover:bg-white-hover'>
+                                    <FragmentPlayIconSuggetions/>
+                                    <div className='w-fit'>
                                     <span
                                         dangerouslySetInnerHTML={{__html: highlightTextSearchPage(fragment.fragmentText, search.current!.value)}}
                                         className='text-dark-blue text-[16px] font-normal font-open-sans pb-[3px]'></span>
-                                    <div className='flex items-center'>
-                                        <PlayIconSuggetions/>
-                                        <span className='text-[#6A6A77] text-[14px] font-normal font-open-sans'>Система. ПРО Бизнес</span>
+                                      <div className='flex items-center'>
+                                          <PlayIconSuggetions/>
+                                          <span className='text-[#6A6A77] text-[14px] font-normal font-open-sans'>{fragment.videoTitle[0]}</span>
+                                      </div>
                                     </div>
-                                </div>
-                            </li>
+                                </li>
+                            </Link>
                         }
                       </>
                   )

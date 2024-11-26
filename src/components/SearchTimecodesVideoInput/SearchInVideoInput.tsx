@@ -15,7 +15,7 @@ type SearchInVideoInputPropsType = {
 export const SearchInVideoInput = ({getSearch, setIsActiveInput, isActiveInput}: SearchInVideoInputPropsType) => {
   const [, setIsFocused] = useState(false);
   const [param, setParam] = useSearchParams();
-  const [suggestions, setSuggestions] = useState<{ start: number; textTimecode: string; }[]>([]);
+  const [suggestions, setSuggestions] = useState<{ start: number | string; textTimecode: string; }[]>([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState(-1);
   const [, setOpen] = useState(false);
   // const navigate = useNavigate();
