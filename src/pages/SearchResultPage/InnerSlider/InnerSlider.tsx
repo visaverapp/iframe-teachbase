@@ -1,16 +1,17 @@
 import { Slide, SliderContainer, SliderStyled } from './InnerSlide.styled';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Video } from '@/types';
 import StyledLink from "@/components/StyledLink/StyledLink";
 import {FragmentCard} from "@/components/Card/FragmentCard/FragmentCard";
 import {ArrowButton} from "@/components/Button/ArrowButton/ArrowButton";
 import {secondsToTime} from "@/pages/Search/utils";
+import {VideoWithFragments} from "@/types/playlistTypes";
 type InnerSliderProps = {
-  items: Video;
+  items: VideoWithFragments;
 };
 
 const InnerSlider = ({ items }: InnerSliderProps) => {
+  console.log(items)
 
   const settings = {
     dots: false,
@@ -25,54 +26,6 @@ const InnerSlider = ({ items }: InnerSliderProps) => {
     accessibility: true,
     swipeToSlide: true,
 
-    responsive: [
-      //  {
-      //    breakpoint: 1200,
-      //    settings: {
-      //      slidesToShow: 3,
-      //    },
-      //  },
-      // {
-      //   breakpoint: 1200,
-      //   settings: {
-      //     slidesToShow: items.cues.length > 1 ? 2 : 1,
-      //     centerPadding: '10px',
-      //     centerMode: true,
-      //   },
-      // },
-      // {
-      //   breakpoint: 1024,
-      //   settings: {
-      //     slidesToShow: items.cues.length > 1 ? 2 : 1,
-      //     centerPadding: '10px',
-      //     centerMode: true,
-      //   },
-      // },
-      // {
-      //   breakpoint: 768,
-      //   settings: {
-      //     slidesToShow: items.cues.length > 1 ? 2 : 1,
-      //     centerPadding: '10px',
-      //     centerMode: true,
-      //   },
-      // },
-      // {
-      //   breakpoint: 480,
-      //   settings: {
-      //     slidesToShow: 1,
-      //     centerPadding: '10px',
-      //     centerMode: true,
-      //   },
-      // },
-      // {
-      //   breakpoint: 410,
-      //   settings: {
-      //     centerPadding: '40px',
-      //     slidesToShow: 1,
-      //     centerMode: true,
-      //   },
-      // },
-    ],
   };
 
   if (items.cues.length === 0) {
@@ -85,9 +38,9 @@ const InnerSlider = ({ items }: InnerSliderProps) => {
           {items.cues.map(({ content, timestampLink ,image}, i) => (
               <div key={i}>
                 <Slide index={i}>
-                  <StyledLink to={'/'} state={{ fromSearch: true }}>
+                  <StyledLink to={`/${items.publicId}?t=${timestampLink}`} state={{ fromSearch: true }}>
                     <FragmentCard
-                        background_image={`https://visaver.online${image}`}
+                        background_image={`https://visaver.test.online${image}`}//такого свойства не приходит
                         timeStamp={secondsToTime(parseInt(timestampLink))}
                         content={content}
                     />

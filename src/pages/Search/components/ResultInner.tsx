@@ -1,5 +1,5 @@
-import {Video} from "@/types";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
+import {Video} from "@/types/videosTypes";
 
 interface ResultInnerProps {
   data?: Video[];

@@ -1,20 +1,19 @@
-import {memo, useState} from "react";
-import {useGetTimecodesQuery} from "@/api";
+import {memo, useMemo, useState} from "react";
 import {secondsToTime} from "@/pages/Search/utils";
+import {useGetTimecodesQuery} from "@/api";
 
 interface TimecodesProps {
   setTime: (time: number) => void;
-  playlistId: string;
   id: string;
   currentTime: number | null;
   onChange: (value: boolean)=> void
 }
 
-export const Timecodes = memo(({ setTime, playlistId, id, onChange, currentTime }: TimecodesProps) => {
+export const Timecodes = memo(({ setTime, id, onChange, currentTime }: TimecodesProps) => {
   const [showTextIndex, setShowTextIndex] = useState(null)
   const [isCollapsed, setIsCollapsed] = useState(false)
 
-  const { data } = useGetTimecodesQuery({ playlistId: playlistId, videoPublicId: id });
+  const { data } = useGetTimecodesQuery({ videoPublicId: id ?? '' }, {skip: !id});
 
   const toggleText = (index: any) => {
     setShowTextIndex(prevIndex => (prevIndex === index ? null : index));
@@ -25,7 +24,7 @@ export const Timecodes = memo(({ setTime, playlistId, id, onChange, currentTime 
     onChange(isCollapsed)
   };
 
-  const timings = data?.map((array) => array.start) || [];
+  const timings = useMemo(() => data?.map((array) => array.start as number) ?? [], [data]);
 
   const highlightChapter = (i: number) => {
     return currentTime != null && currentTime >= timings[i] && (timings[i + 1] === undefined || currentTime < timings[i + 1]);
@@ -38,12 +37,12 @@ export const Timecodes = memo(({ setTime, playlistId, id, onChange, currentTime 
             <ol>
               {data.map(({start, text, title}, i) => (
                   <li className={`${highlightChapter(i) ? 'bg-[#E5E9F2]' : 'bg-white'} hover:bg-white-hover cursor-pointer rounded-[8px] pb-[8px] pr-[8px]`} key={i}>
-                    <div onClick={() => setTime(start)}>
-                      <span className='text-lite-green font-open-sans font-bold text-[14px] pr-[5px]'>{secondsToTime(start)}</span>
+                    <div onClick={() => setTime(start as number)}>
+                      <span className='text-lite-green font-open-sans font-bold text-[14px] pr-[5px]'>{secondsToTime(start as number)}</span>
                       <span className={`text-dark-blue font-open-sans font-bold text-[14px]`}>{title}</span>
                     </div>
                     <div className='flex w-[670px] justify-between'>
-                      <span onClick={() => setTime(start)}
+                      <span onClick={() => setTime(start as number)}
                           className='cursor-pointer text-indigo font-open-sans font-normal text-[14px]'>
                         {showTextIndex === i ? text : text.slice(0, 85) + '...'}
                       </span>

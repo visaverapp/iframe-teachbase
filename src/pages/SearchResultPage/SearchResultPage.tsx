@@ -14,14 +14,15 @@ export const SearchResultPage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [toggleActive, setToggleActive] = useState(false);
   const search = useRef<HTMLInputElement | null>(null);
+  const playlistId = `${import.meta.env.VITE_PLAYLIST_ID}`
 
   const {data: playlists} = playlistsAPI.useGetMyPlaylistsQuery({})
   const videos = playlists?.results[0].videos
 
-  const {data: fragments} = playlistsAPI.useGetFullSearchQuery({
-    publicId: "59609dd8-7ef4-4080-9cb8-3c2cab266494",
+  const {data: fragments} = playlistsAPI.useGetFullSearchInPlaylistQuery({
+    publicId: playlistId,
     query: search.current?.value || params.get("search") || ""
-  });
+  }, {skip: !playlistId});
 
   const countFragments = useMemo(() => {
     if (!fragments) return 0;
@@ -44,19 +45,20 @@ export const SearchResultPage = () => {
         <div className='relative flex flex-col scroll-bar overflow-y-scroll'>
           {activeTab === 0 ?
               <div>
+                <ResultVideoInnerWithScreenShot fragments={fragments ?? []}/>
                 {!toggleActive && videos && videos.map(video => <SearchVideoCard key={video.publicId}
                                                                                          video={video}/>)}
                 {toggleActive && !params.get('search') && videos?.map(video => <SearchVideoCard key={video.publicId}
                                                                                          video={video}/>)}
-                <ResultVideoInnerWithScreenShot search={search}/>
               </div>
               :
-              activeTab === 1 ? <ResultVideoInnerWithScreenShot search={search}/>
+              activeTab === 1 ? <ResultVideoInnerWithScreenShot fragments={fragments ?? []}/>
                   : activeTab === 2 ? <>{!toggleActive && videos && videos?.map(video => <SearchVideoCard key={video.publicId}
                                                                                          video={video}/>)}</>
                       : <></>
           }
         </div>
+        {toggleActive && fragments?.length === 0 && <div className='pl-[14rem] pb-[14rem] w-max mt-12'>Подходящих видео и фраментов не найдено</div>}
       </div>
   );
 };

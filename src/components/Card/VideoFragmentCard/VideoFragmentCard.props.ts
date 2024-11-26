@@ -1,4 +1,4 @@
-import { Cue } from '@/types';
+import {Cue} from "@/types/playlistTypes";
 
 export interface VideoFragmentCardProps {
   // fragment: VideoWithFragments;
