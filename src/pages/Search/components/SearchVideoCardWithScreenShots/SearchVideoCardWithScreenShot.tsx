@@ -10,7 +10,7 @@ import StyledLink from "@/components/StyledLink/StyledLink";
 import {VideoCard} from "@/components/VideoCard/VideoCard";
 import {VideoWithFragments} from "@/types/playlistTypes";
 
-interface SearchVideoCardProps {
+export interface SearchVideoCardProps {
   videoInfo: VideoWithFragments;
 }
 
@@ -20,7 +20,7 @@ export const SearchVideoCardWithScreenShot = ({ videoInfo }: SearchVideoCardProp
       <>
         <SearchVideoCardStyled>
           <Header>
-            <HeaderContent>
+            <HeaderContent videoInfo={videoInfo}>
               <StyledLink to={`/${videoInfo.publicId}?t=${videoInfo.startsFrom ?? 0}`} state={{fromSearch: true}}>
                 <VideoCard height={'208px'} url={videoInfo.originLink} video={videoInfo} iframeClassName='w-[320px] rounded-[12px]'/>
               </StyledLink>

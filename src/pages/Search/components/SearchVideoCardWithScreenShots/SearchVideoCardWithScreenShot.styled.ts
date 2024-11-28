@@ -2,6 +2,9 @@ import styled from 'styled-components';
 import { DescriptionText, theme, Text } from '@/styles';
 import {SearchInput} from "@/components/SearchInput/SearchInput";
 import Button from "@/components/Button/Button";
+import {
+  SearchVideoCardProps
+} from "@/pages/Search/components/SearchVideoCardWithScreenShots/SearchVideoCardWithScreenShot";
 
 export const CardsList = styled.div`
   display: flex;
@@ -65,12 +68,16 @@ export const Header = styled.div`
   //}
 `;
 
-export const HeaderContent = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-direction: column;
-  gap: 16px;
+export const HeaderContent = styled.div<SearchVideoCardProps>`
+    display: flex;
+    background-image: url(${({videoInfo}) => `${videoInfo.thumbnailUrl}`});
+    background-size: cover; 
+    background-position: center;
+    width: 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 16px;
 
   @media screen and (max-width: 480px) {
     align-items: center;

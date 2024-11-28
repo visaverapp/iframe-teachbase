@@ -35,12 +35,12 @@ const InnerSlider = ({ items }: InnerSliderProps) => {
   return (
       <SliderContainer>
         <SliderStyled {...settings} className="slider" cssEase="linear">
-          {items.cues.map(({ content, timestampLink ,image}, i) => (
+          {items.cues.map(({ content, timestampLink }, i) => (
               <div key={i}>
                 <Slide index={i}>
                   <StyledLink to={`/${items.publicId}?t=${timestampLink}`} state={{ fromSearch: true }}>
                     <FragmentCard
-                        background_image={`https://visaver.test.online${image}`}//такого свойства не приходит
+                        background_image={items.thumbnailUrl}
                         timeStamp={secondsToTime(parseInt(timestampLink))}
                         content={content}
                     />
