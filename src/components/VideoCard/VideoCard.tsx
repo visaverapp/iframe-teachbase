@@ -22,7 +22,9 @@ export const VideoCard = memo(({goToTimeFunc,ref, hasInitialized, iframeWrapper,
   const [params] = useSearchParams();
 
   const onPlayerReady = useCallback(() => {
-    if (hasInitialized.current) return;
+    if (hasInitialized?.current) {
+      return;
+    }
 
     hasInitialized.current = true;
 

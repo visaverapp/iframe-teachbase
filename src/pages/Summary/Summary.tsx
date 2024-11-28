@@ -71,10 +71,31 @@ export const Summary = ({videoId}: SummaryProps) => {
                 source={cleanedMarkdown}
                 style={{ background: 'transparent', color: 'black', fontSize: '14px' }}
                 rehypeRewrite={(node) => {
-                  if ("tagName" in node && node.tagName === 'h1') {
-                    node.properties = {
-                      style: 'font-size: 22px;'
-                    };
+                  if("tagName" in node ) {
+
+                    const {tagName} = node;
+
+                    switch (tagName) {
+                      case 'h1':
+                        node.properties = {
+                          style: 'font-size: 20px;'
+                        };
+                       break;
+                      case 'ul':
+                        node.properties = {
+                          ...node.properties,
+                          style: 'list-style-type: disc;'
+                        };
+                        break;
+                      case 'ol':
+                        node.properties = {
+                          ...node.properties,
+                          style: 'list-style-type: decimal;'
+                        };
+                        break;
+                      default:
+                        break;
+                    }
                   }
                 }}
               />
