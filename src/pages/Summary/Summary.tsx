@@ -3,7 +3,7 @@ import {useLocation} from "react-router-dom";
 import {useGetDocsQuery, useLazyGetDocsQuery} from "@/api";
 import {Download} from "@/components/SVGIcons/Download";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
-import Markdown from "markdown-to-jsx";
+import MarkdownPreview from '@uiw/react-markdown-preview';
 
 interface SummaryProps {
   videoId: string
@@ -67,9 +67,17 @@ export const Summary = ({videoId}: SummaryProps) => {
           </div>
           <div className='w-[590px]'>
             {cleanedMarkdown && (
-                <Markdown options={{
-                  forceBlock: true
-                }}>{cleanedMarkdown}</Markdown>
+              <MarkdownPreview
+                source={cleanedMarkdown}
+                style={{ background: 'transparent', color: 'black', fontSize: '14px' }}
+                rehypeRewrite={(node) => {
+                  if ("tagName" in node && node.tagName === 'h1') {
+                    node.properties = {
+                      style: 'font-size: 22px;'
+                    };
+                  }
+                }}
+              />
             )}
 
           </div>
