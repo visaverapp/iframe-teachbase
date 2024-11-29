@@ -75,4 +75,4 @@ export const playlistsAPI = api.injectEndpoints({
   }),
 });
 
-export const {useGetFullSearchInPlaylistQuery } = playlistsAPI;
+export const {useGetFullSearchInPlaylistQuery, useGetPlaylistByIdQuery } = playlistsAPI;
