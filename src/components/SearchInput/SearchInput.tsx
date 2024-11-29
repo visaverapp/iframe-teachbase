@@ -39,7 +39,7 @@ export const SearchInput = ({startSearchPageSettings, showButtonLastVideo, showB
       const suggetionsFragment = video.map(fragment => (
           {
             fragmentText: fragment.cues[0].content,
-            videoTitle: video.map(item => item.title),
+            videoTitle: fragment.title,
             publicId: video.map(item => item.publicId),
             timestampLink: fragment.cues[0].timestampLink
           }
@@ -122,7 +122,7 @@ export const SearchInput = ({startSearchPageSettings, showButtonLastVideo, showB
               onFocus={handleFocus}
               onChange={onSearch}
               onKeyDown={onKeyDownHandler}
-              defaultValue={params.get('search') ?? ''}
+              defaultValue={params.get('search')?.replace(/<\/?mark>/g, '') ?? ''}
               placeholder='Что ищем в этом курсе?'
               disabled={showBackButton || showButtonLastVideo}
               className={`${startSearchPageSettings?.inputWidth ? startSearchPageSettings.inputWidth : 'w-[945px]'} ${(showBackButton || showButtonLastVideo) ? 'border-opacity-30 placeholder:opacity-35': ''} h-[40px] focus:outline-none focus:border-light-gray self-end pl-[16px] pr-[45px] pt-[7px] pb-[10px] border-[#8492A6] border-[1px] rounded-[9px] text-[16px] text-dark-blue `}
@@ -169,7 +169,7 @@ export const SearchInput = ({startSearchPageSettings, showButtonLastVideo, showB
                                         className='text-dark-blue text-[16px] font-normal font-open-sans pb-[3px]'></span>
                                       <div className='flex items-center'>
                                           <PlayIconSuggetions/>
-                                          <span className='text-[#6A6A77] text-[14px] font-normal font-open-sans'>{fragment.videoTitle[0]}</span>
+                                          <span className='text-[#6A6A77] text-[14px] font-normal font-open-sans'>{fragment.videoTitle}</span>
                                       </div>
                                     </div>
                                 </li>

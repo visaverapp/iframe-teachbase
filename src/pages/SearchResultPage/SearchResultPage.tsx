@@ -16,8 +16,8 @@ export const SearchResultPage = () => {
   const search = useRef<HTMLInputElement | null>(null);
   const playlistId = `${import.meta.env.VITE_PLAYLIST_ID}`
 
-  const {data: playlists} = playlistsAPI.useGetMyPlaylistsQuery({})
-  const videos = playlists?.results[0].videos
+  const {data: playlists} = playlistsAPI.useGetPlaylistByIdQuery({id: playlistId})
+  const videos = playlists && playlists.videos
 
   const {data: fragments} = playlistsAPI.useGetFullSearchInPlaylistQuery({
     publicId: playlistId,
@@ -46,15 +46,15 @@ export const SearchResultPage = () => {
           {activeTab === 0 ?
               <div>
                 <ResultVideoInnerWithScreenShot fragments={fragments ?? []}/>
-                {!toggleActive && videos && videos.map(video => <SearchVideoCard key={video.publicId}
-                                                                                         video={video}/>)}
+                {!toggleActive ? videos?.map(video => <SearchVideoCard key={video.publicId}
+                                                                                         video={video}/>) : <></>}
                 {toggleActive && !params.get('search') && videos?.map(video => <SearchVideoCard key={video.publicId}
                                                                                          video={video}/>)}
               </div>
               :
               activeTab === 1 ? <ResultVideoInnerWithScreenShot fragments={fragments ?? []}/>
-                  : activeTab === 2 ? <>{!toggleActive && videos && videos?.map(video => <SearchVideoCard key={video.publicId}
-                                                                                         video={video}/>)}</>
+                  : activeTab === 2 ? <>{!toggleActive ? videos?.map(video => <SearchVideoCard key={video.publicId}
+                                                                                         video={video}/>) : <></> }</>
                       : <></>
           }
         </div>
